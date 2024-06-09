@@ -86,6 +86,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\Ghes\CreateGhePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Ghes\GhePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

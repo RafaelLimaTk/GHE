@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHE.InfraData", "GHE.InfraD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHE.Domain", "GHE.Domain\GHE.Domain.csproj", "{450EEAA3-3B70-4B99-9415-97352B9A9C14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHE.Migration", "GHE.Migration\GHE.Migration.csproj", "{845EA4AF-3ABF-453E-A8DE-5E8C6BFCCACE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,10 +29,6 @@ Global
 		{450EEAA3-3B70-4B99-9415-97352B9A9C14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{450EEAA3-3B70-4B99-9415-97352B9A9C14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{450EEAA3-3B70-4B99-9415-97352B9A9C14}.Release|Any CPU.Build.0 = Release|Any CPU
-		{845EA4AF-3ABF-453E-A8DE-5E8C6BFCCACE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{845EA4AF-3ABF-453E-A8DE-5E8C6BFCCACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{845EA4AF-3ABF-453E-A8DE-5E8C6BFCCACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{845EA4AF-3ABF-453E-A8DE-5E8C6BFCCACE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

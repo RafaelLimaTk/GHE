@@ -2,6 +2,7 @@
 using GHE.Domain.Interfaces;
 using GHE.InfraData.Data;
 using GHE.InfraData.Repository;
+using GHE.Views.Ghes;
 using GHE.Views.Login;
 using Microsoft.Extensions.Logging;
 
@@ -23,10 +24,18 @@ namespace GHE
 
             builder.Services.AddDbContext<GheContext>();
 
+            #region Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IGheRepository, GheRepository>();
+            builder.Services.AddScoped<ITrainingRepository, TrainingRepository>();
+            #endregion
 
+            #region Pages
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<RegisterPage>();
+            builder.Services.AddTransient<GhePage>();
+            builder.Services.AddTransient<CreateGhePage>();
+            #endregion
 
 #if DEBUG
             builder.Logging.AddDebug();

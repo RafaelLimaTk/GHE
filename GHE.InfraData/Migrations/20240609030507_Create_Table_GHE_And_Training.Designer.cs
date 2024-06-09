@@ -3,6 +3,7 @@ using System;
 using GHE.InfraData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GHE.InfraData.Migrations
 {
     [DbContext(typeof(GheContext))]
-    partial class GheContextModelSnapshot : ModelSnapshot
+    [Migration("20240609030507_Create_Table_GHE_And_Training")]
+    partial class Create_Table_GHE_And_Training
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");

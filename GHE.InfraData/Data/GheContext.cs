@@ -24,4 +24,14 @@ public class GheContext : DbContext
         optionsBuilder.UseSqlite($"Filename={databasePath}");
         Console.WriteLine(databasePath);
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Ghe>()
+            .HasMany(g => g.Trainings)
+            .WithOne(t => t.Ghe)
+            .HasForeignKey(t => t.GheId);
+
+        base.OnModelCreating(modelBuilder);
+    }
 }
