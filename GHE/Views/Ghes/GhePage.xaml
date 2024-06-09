@@ -1,12 +1,85 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GHE.ViewModels.Ghes"
              x:Class="GHE.Views.Ghes.GhePage"
              Title="GhePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <ContentPage.BindingContext>
+        <vm:CreateAndEditGheViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <Grid Padding="20" MaximumWidthRequest="700" HorizontalOptions="Center" RowSpacing="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0"
+               Text="PESQUISAR GHE"
+               FontSize="Large"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               Margin="0,0,0,20"/>
+
+            <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="EndAndExpand">
+                <Entry Placeholder="Pesquisar" WidthRequest="200" Text="{Binding SearchTerm}"/>
+                <Button Text="Buscar" Command="{Binding SearchCommand}" Margin="10,0,0,0"/>
+            </StackLayout>
+
+            <StackLayout Grid.Row="2" Margin="0,20,0,20" Spacing="15">
+                <Entry Placeholder="Matrícula" Text="{Binding Matricula}"/>
+                <Entry Placeholder="Nome" Text="{Binding Nome}"/>
+                <Entry Placeholder="GHE" Text="{Binding Ghe}"/>
+                <Editor Placeholder="Descrição de atividades" Text="{Binding DescricaoAtividades}"/>
+            </StackLayout>
+
+            <StackLayout Grid.Row="3" Orientation="Horizontal" Margin="0,10,0,20">
+                <CheckBox IsChecked="{Binding Insalubridade}"/>
+                <Label Text="Insalubridade" VerticalOptions="Center"/>
+
+                <CheckBox IsChecked="{Binding Periculosidade}" Margin="10,0,0,0"/>
+                <Label Text="Periculosidade" VerticalOptions="Center"/>
+
+                <CheckBox IsChecked="{Binding NaoAplica}" Margin="10,0,0,0"/>
+                <Label Text="Não Aplica" VerticalOptions="Center"/>
+            </StackLayout>
+
+            <StackLayout Grid.Row="4" Orientation="Horizontal" Margin="0,10,0,20">
+                <Label Text="Treinamentos" FontAttributes="Bold" FontSize="Medium" VerticalOptions="Center"/>
+                <Button Text="Adicionar treinamento" HorizontalOptions="EndAndExpand" Command="{Binding AddTrainingCommand}" Margin="10,0,0,0"/>
+            </StackLayout>
+
+            <StackLayout Grid.Row="5" Margin="0,10,0,20" Spacing="15">
+                <Entry Placeholder="Treinamento" Text="{Binding NewTraining.TrainingName}" HorizontalOptions="FillAndExpand"/>
+                <DatePicker Format="dd/MM/yyyy" Date="{Binding NewTraining.TrainingDate}" HorizontalOptions="FillAndExpand"/>
+                <Entry Placeholder="ASO" Text="{Binding NewTraining.ASO}" HorizontalOptions="FillAndExpand"/>
+                <DatePicker Format="dd/MM/yyyy" Date="{Binding NewTraining.TrainingDateFinal}" HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
+
+            <CollectionView Grid.Row="6" ItemsSource="{Binding Trainings}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Orientation="Horizontal" Padding="10" BackgroundColor="DarkGray" Margin="0,5,0,5">
+                            <Label Text="{Binding TrainingName}" TextColor="{StaticResource White}"  HorizontalOptions="StartAndExpand" WidthRequest="200"/>
+                            <Label Text="{Binding TrainingDate, StringFormat='{0:dd/MM/yyyy}'}" TextColor="{StaticResource White}" HorizontalOptions="Center" WidthRequest="50"/>
+                            <Label Text="{Binding ASO}" TextColor="{StaticResource White}" HorizontalOptions="Center" WidthRequest="100"/>
+                            <Label Text="{Binding TrainingDateFinal, StringFormat='{0:dd/MM/yyyy}'}" TextColor="{StaticResource White}" HorizontalOptions="EndAndExpand" WidthRequest="50"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <StackLayout Grid.Row="7" Orientation="Horizontal" HorizontalOptions="Center" Margin="0,20,0,0">
+                <Button Text="IMPRIMIR" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource White}" Command="{Binding NewCommand}"/>
+                <Button Text="Exportar todos os GHE" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource White}" Command="{Binding SaveCommand}"/>
+            </StackLayout>
+        </Grid>
+    </ScrollView>
 </ContentPage>

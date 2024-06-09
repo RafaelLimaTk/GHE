@@ -80,7 +80,7 @@
                                      Grid.Row="5"
                                      Margin="0,0,0,10">
                         <CheckBox x:Name="RememberMeCheckBox" 
-                                  IsChecked="{Binding IsBuy, Mode=TwoWay}"/>
+                                  IsChecked="{Binding IsBusy}"/>
                         <Label Text="Lembrar-me"
                                    VerticalOptions="Center"/>
                     </StackLayout>
@@ -92,14 +92,17 @@
                                 Command="{Binding LoginCommand}"/>
 
                     <Frame Grid.Row="7"
-                               Padding="10"
-                               Margin="0, 20"
-                               HasShadow="False"
-                               BackgroundColor="{StaticResource PrimaryDark}"
-                               BorderColor="Transparent">
+                           Padding="10"
+                           Margin="0, 20"
+                           HasShadow="False"
+                           BackgroundColor="{StaticResource PrimaryDark}"
+                           BorderColor="Transparent">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToSearchGheCommand}" NumberOfTapsRequired="1" />
+                        </Frame.GestureRecognizers>
                         <Label Text="Pesquisar GHE"
-                                   HorizontalOptions="Center"
-                                   TextColor="{StaticResource White}"/>
+                               HorizontalOptions="Center"
+                               TextColor="{StaticResource White}"/>
                     </Frame>
                 </Grid>
             </ScrollView>

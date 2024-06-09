@@ -77,10 +77,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="ViewModels\Ghes\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\GHE.Domain\GHE.Domain.csproj" />
 	  <ProjectReference Include="..\GHE.InfraData\GHE.InfraData.csproj" />
 	</ItemGroup>

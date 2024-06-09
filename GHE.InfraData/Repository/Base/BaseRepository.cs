@@ -19,7 +19,7 @@ public class BaseRepository<T> : IRepository<T> where T : class
         return await Entities.AsNoTracking().ToListAsync();
     }
 
-    public async Task<T> GetByIdAsync(int id)
+    public async Task<T> GetByIdAsync(Guid id)
     {
         return await Entities.FindAsync(id);
     }
@@ -30,7 +30,7 @@ public class BaseRepository<T> : IRepository<T> where T : class
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         var entity = await Entities.FindAsync(id);
         if (entity == null)

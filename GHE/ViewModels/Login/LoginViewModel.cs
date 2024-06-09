@@ -38,7 +38,7 @@ public partial class LoginViewModel : ObservableObject
             if (isBusy)
                 UserAuth.SetUserAuth(user);
 
-            await Shell.Current.GoToAsync("login");
+            await Shell.Current.GoToAsync("criarghe");
         }
         else
             await App.Current.MainPage.DisplayAlert("Error", "Email ou senha invalidos", "Ok");
@@ -48,5 +48,11 @@ public partial class LoginViewModel : ObservableObject
     public async Task GoToRegister()
     {
         await Shell.Current.GoToAsync("register");
+    }
+
+    [RelayCommand]
+    private async Task GoToSearchGhe()
+    {
+        await Shell.Current.GoToAsync("ghe");
     }
 }

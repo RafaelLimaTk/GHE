@@ -5,4 +5,5 @@ namespace GHE.Domain.Interfaces;
 
 public interface IGheRepository : IRepository<Ghe>
 {
+    Task<Ghe> GetByMatriculaOrNomeAsync(string searchTerm);
 }
