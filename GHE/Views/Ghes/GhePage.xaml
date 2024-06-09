@@ -77,8 +77,8 @@
             </CollectionView>
 
             <StackLayout Grid.Row="7" Orientation="Horizontal" HorizontalOptions="Center" Margin="0,20,0,0">
-                <Button Text="IMPRIMIR" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource White}" Command="{Binding NewCommand}"/>
-                <Button Text="Exportar todos os GHE" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource White}" Command="{Binding SaveCommand}"/>
+                <Button Text="IMPRIMIR" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource White}" Command="{Binding SaveReportCommand}"/>
+                <Button Text="Exportar todos os GHE" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource White}"/>
             </StackLayout>
         </Grid>
     </ScrollView>

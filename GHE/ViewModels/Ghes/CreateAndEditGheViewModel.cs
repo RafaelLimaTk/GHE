@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GHE.Domain.Entities;
 using GHE.Domain.Interfaces;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using System.Collections.ObjectModel;
 
 namespace GHE.ViewModels.Ghes;
@@ -71,6 +71,12 @@ public partial class CreateAndEditGheViewModel : ObservableObject
     [RelayCommand]
     private async Task Search()
     {
+        if (string.IsNullOrWhiteSpace(SearchTerm))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "Informe a matricula ou nome do GHE", "OK");
+            return;
+        }
+
         var ghe = await _gheRepository.GetByMatriculaOrNomeAsync(SearchTerm);
         if (ghe != null)
         {
@@ -203,6 +209,81 @@ public partial class CreateAndEditGheViewModel : ObservableObject
         else
         {
             await Toast.Make("Não foi possível excluir o treinamento").Show();
+        }
+    }
+
+    [RelayCommand]
+    public async Task SaveReport()
+    {
+        try
+        {
+            string downloadsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
+            string fileName = $"Relatorio {_currentGhe.Name}";
+            if (!string.IsNullOrEmpty(fileName))
+            {
+                string filePath = Path.Combine(downloadsPath, fileName + ".pdf");
+                CreatePdfReport(filePath);
+                await Application.Current.MainPage.DisplayAlert("Success", "PDF criado com sucesso em", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "Erro ao criar PDF: " + ex.Message, "OK");
+        }
+    }
+
+    public void CreatePdfReport(string filePath)
+    {
+        using (var document = new Document())
+        {
+            PdfWriter writer = PdfWriter.GetInstance(document, new FileStream(filePath, FileMode.Create));
+            document.Open();
+
+            var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18);
+            var title = new Paragraph("Relatório GHE", titleFont)
+            {
+                Alignment = iTextSharp.text.Element.ALIGN_CENTER,
+                SpacingAfter = 20
+            };
+            document.Add(title);
+
+            if (_currentGhe != null)
+            {
+                document.Add(new Paragraph($"Matricula: {_currentGhe.Matricule}"));
+                document.Add(new Paragraph($"Nome: {_currentGhe.Name}"));
+                document.Add(new Paragraph($"GHE: {_currentGhe.GHE}"));
+                document.Add(new Paragraph($"Descrição: {_currentGhe.Description}"));
+
+                if (_currentGhe.Unhealthiness)
+                    document.Add(new Paragraph($"Insalubridade"));
+                if (_currentGhe.Dangerousness)
+                    document.Add(new Paragraph($"Periculosidade"));
+                if (_currentGhe.NotApplicable)
+                    document.Add(new Paragraph("Não aplicado"));
+            }
+
+            document.Add(new Paragraph("Treinamentos:\n\n"));
+
+            if (Trainings != null && Trainings.Count > 0)
+            {
+                PdfPTable table = new PdfPTable(4) { WidthPercentage = 100 };
+                table.AddCell("Treinamento");
+                table.AddCell("Data do treinamento");
+                table.AddCell("ASO");
+                table.AddCell("Data do ASO");
+
+                foreach (var training in Trainings)
+                {
+                    table.AddCell(training.TrainingName ?? "");
+                    table.AddCell(training.TrainingDate?.ToString("yyyy-MM-dd") ?? "");
+                    table.AddCell(training.ASO ?? "");
+                    table.AddCell(training.TrainingDateFinal?.ToString("yyyy-MM-dd") ?? "");
+                }
+                document.Add(table);
+            }
+
+            document.Close();
+            writer.Close();
         }
     }
 }
