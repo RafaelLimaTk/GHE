@@ -3,13 +3,20 @@
     x:Class="GHE.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:GHE"
+    xmlns:login="clr-namespace:GHE.Views.Login"
+    xmlns:ghes="clr-namespace:GHE.Views.Ghes"
     Shell.FlyoutBehavior="Disabled"
     Title="GHE">
 
+
     <ShellContent
         Title="Login"
-        ContentTemplate="{DataTemplate local:MainPage}"
+        ContentTemplate="{DataTemplate login:LoginPage}"
         Route="Login" />
+
+    <ShellContent
+        Title="Ghes"
+        ContentTemplate="{DataTemplate ghes:GhePage}"
+        Route="Ghes" />
 
 </Shell>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GHE.ViewModels.Login"
+             x:Class="GHE.Views.Login.RegisterPage"
+             Title="RegisterPage">
+    <ContentPage.BindingContext>
+        <vm:RegisterViewModel />
+    </ContentPage.BindingContext>
+    <Grid HorizontalOptions="Center"
+              VerticalOptions="Center"
+              Padding="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Frame HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   WidthRequest="500"
+                   Padding="0"
+                   HasShadow="True"
+                   BackgroundColor="Transparent"
+                   BorderColor="Transparent">
+            <ScrollView>
+                <Grid Padding="30">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="Registrar"
+                               FontSize="24"
+                               HorizontalOptions="Center"
+                               Grid.Row="0"
+                               Margin="0,0,0,20"/>
+
+                    <Entry Placeholder="Email"
+                               Grid.Row="3"
+                               Margin="0,0,0,10"
+                               Keyboard="Email"
+                               Text="{Binding Email}"/>
+
+                    <Entry Placeholder="Senha"
+                               Grid.Row="4"
+                               IsPassword="True"
+                               Margin="0,0,0,10"
+                               Text="{Binding Password}"/>
+
+                    <Entry Placeholder="Confirmar senha"
+                               Grid.Row="5"
+                               IsPassword="True"
+                               Margin="0,0,0,10"
+                               Text="{Binding ConfirmPassword}"/>
+
+                    <Button Text="Registar"
+                                Grid.Row="7"
+                                Margin="0,20,0,10"
+                                TextColor="{StaticResource White}"
+                                Command="{Binding RegisterCommand}"/>
+                </Grid>
+            </ScrollView>
+        </Frame>
+    </Grid>
+</ContentPage>

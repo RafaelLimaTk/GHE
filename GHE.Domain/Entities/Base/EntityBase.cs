@@ -1,4 +1,4 @@
-﻿namespace GHE.Models.Base;
+﻿namespace GHE.Domain.Entities.Base;
 
 public abstract class EntityBase
 {

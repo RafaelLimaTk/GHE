@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GHE.ViewModels.Login"
+             x:Class="GHE.Views.Login.LoginPage"
+             Title="LoginPage">
+    <ContentPage.BindingContext>
+        <vm:LoginViewModel />
+    </ContentPage.BindingContext>
+    <Grid HorizontalOptions="Center"
+              VerticalOptions="Center"
+              Padding="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Frame HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   WidthRequest="500"
+                   Padding="0"
+                   HasShadow="True"
+                   BackgroundColor="Transparent"
+                   BorderColor="Transparent">
+            <ScrollView>
+                <Grid Padding="30">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="Entrar"
+                               FontSize="24"
+                               HorizontalOptions="Center"
+                               Grid.Row="0"
+                               Margin="0,0,0,20"/>
+
+                    <Button Text="Cadastrar senha GHE"
+                                Grid.Row="1"
+                                Margin="0,0,0,10"
+                                TextColor="{StaticResource White}"
+                                Command="{Binding GoToRegisterCommand}"/>
+
+                    <Grid HorizontalOptions="Fill" VerticalOptions="Center" Grid.Row="2" Margin="0, 10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <BoxView HeightRequest="1" BackgroundColor="Gray" HorizontalOptions="Fill" VerticalOptions="Center" Grid.Column="0"/>
+                        <Label Text="ou" Margin="15, 0" FontSize="18" TextColor="{StaticResource Gray600}" Grid.Column="1"/>
+                        <BoxView HeightRequest="1" BackgroundColor="Gray" HorizontalOptions="Fill" VerticalOptions="Center" Grid.Column="2"/>
+                    </Grid>
+
+                    <Entry Placeholder="Email"
+                               Grid.Row="3"
+                               Margin="0,0,0,10"
+                               Keyboard="Email"/>
+
+                    <Entry Placeholder="Senha"
+                               Grid.Row="4"
+                               IsPassword="True"
+                               Margin="0,0,0,10"/>
+
+                    <StackLayout Orientation="Horizontal"
+                                     Grid.Row="5"
+                                     Margin="0,0,0,10">
+                        <CheckBox x:Name="RememberMeCheckBox"/>
+                        <Label Text="Lembrar-me"
+                                   VerticalOptions="Center"/>
+                    </StackLayout>
+
+                    <Button Text="Entrar"
+                                Grid.Row="6"
+                                Margin="0,20,0,10"
+                                TextColor="{StaticResource White}"/>
+
+                    <Frame Grid.Row="7"
+                               Padding="10"
+                               Margin="0, 20"
+                               HasShadow="False"
+                               BackgroundColor="{StaticResource PrimaryDark}"
+                               BorderColor="Transparent">
+                        <Label Text="Pesquisar GHE"
+                                   HorizontalOptions="Center"
+                                   TextColor="{StaticResource White}"/>
+                    </Frame>
+                </Grid>
+            </ScrollView>
+        </Frame>
+    </Grid>
+</ContentPage>

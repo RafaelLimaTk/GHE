@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using GHE.Models.Base;
+using GHE.Domain.Entities.Base;
 
-namespace GHE.Models;
+namespace GHE.Domain.Entities;
 
 public class User : EntityBase
 {
@@ -15,8 +15,6 @@ public class User : EntityBase
         Email = email;
         Password = password;
     }
-
-    public bool IsValid() => new UserValidator().Validate(this).IsValid;
 }
 
 public class UserValidator : AbstractValidator<User>
