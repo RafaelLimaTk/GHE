@@ -223,7 +223,7 @@ public partial class CreateAndEditGheViewModel : ObservableObject
             {
                 string filePath = Path.Combine(downloadsPath, fileName + ".pdf");
                 CreatePdfReport(filePath);
-                await Application.Current.MainPage.DisplayAlert("Success", "PDF criado com sucesso em", "OK");
+                await Application.Current.MainPage.DisplayAlert("Success", "PDF criado com sucesso em downloads", "OK");
             }
         }
         catch (Exception ex)
