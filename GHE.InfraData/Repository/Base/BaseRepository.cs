@@ -7,7 +7,7 @@ namespace GHE.InfraData.Repository.Base;
 public class BaseRepository<T> : IRepository<T> where T : class
 {
     private readonly GheContext _context;
-    public DbSet<T> Entities { get; set; }
+    public DbSet<T> Entities { get; }
     public BaseRepository(GheContext context)
     {
         _context = context;

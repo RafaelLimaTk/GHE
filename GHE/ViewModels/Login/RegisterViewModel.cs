@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using GHE.Domain.Entities;
 using GHE.Domain.Interfaces;
+using GHE.Extensions;
 
 namespace GHE.ViewModels.Login;
 
@@ -30,6 +31,13 @@ public partial class RegisterViewModel : ObservableObject
         {
             await currentPageErro.DisplayAlert("Erro",
                                   $"As senhas não conferem", "Ok");
+            return;
+        }
+
+        var validateEmail = EmailValidate.IsValidEmail(Email);
+        if (!validateEmail)
+        {
+            await App.Current.MainPage.DisplayAlert("Error", "Email invalido", "Ok");
             return;
         }
 

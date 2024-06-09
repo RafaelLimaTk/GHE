@@ -67,17 +67,20 @@
                     <Entry Placeholder="Email"
                                Grid.Row="3"
                                Margin="0,0,0,10"
-                               Keyboard="Email"/>
+                               Keyboard="Email"
+                               Text="{Binding Email}"/>
 
                     <Entry Placeholder="Senha"
                                Grid.Row="4"
                                IsPassword="True"
-                               Margin="0,0,0,10"/>
+                               Margin="0,0,0,10"
+                               Text="{Binding Password}"/>
 
                     <StackLayout Orientation="Horizontal"
                                      Grid.Row="5"
                                      Margin="0,0,0,10">
-                        <CheckBox x:Name="RememberMeCheckBox"/>
+                        <CheckBox x:Name="RememberMeCheckBox" 
+                                  IsChecked="{Binding IsBuy, Mode=TwoWay}"/>
                         <Label Text="Lembrar-me"
                                    VerticalOptions="Center"/>
                     </StackLayout>
@@ -85,7 +88,8 @@
                     <Button Text="Entrar"
                                 Grid.Row="6"
                                 Margin="0,20,0,10"
-                                TextColor="{StaticResource White}"/>
+                                TextColor="{StaticResource White}"
+                                Command="{Binding LoginCommand}"/>
 
                     <Frame Grid.Row="7"
                                Padding="10"
