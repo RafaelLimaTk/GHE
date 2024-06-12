@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:login="clr-namespace:GHE.Views.Login"
     xmlns:ghes="clr-namespace:GHE.Views.Ghes"
-    Shell.FlyoutBehavior="Disabled"
     Title="GHE">
 
 
@@ -14,9 +13,8 @@
         ContentTemplate="{DataTemplate login:LoginPage}"
         Route="Login" />
 
-    <ShellContent
-        Title="Ghes"
-        ContentTemplate="{DataTemplate ghes:GhePage}"
-        Route="Ghes" />
+    <FlyoutItem  Title="Pesquisar GHE">
+        <ShellContent ContentTemplate="{DataTemplate ghes:GhePage}" />
+    </FlyoutItem>
 
 </Shell>

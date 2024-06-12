@@ -4,13 +4,14 @@
              xmlns:vm="clr-namespace:GHE.ViewModels.Ghes"
              x:Class="GHE.Views.Ghes.CreateGhePage"
              x:Name="Page"
-             Title="CreateGhePage">
+             Title="GHE"
+             NavigationPage.HasNavigationBar="True">
     <ContentPage.BindingContext>
         <vm:CreateAndEditGheViewModel />
     </ContentPage.BindingContext>
 
     <ScrollView>
-        <Grid Padding="20" MaximumWidthRequest="700" HorizontalOptions="Center" RowSpacing="10">
+        <Grid Padding="20" WidthRequest="800" HorizontalOptions="Center" RowSpacing="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -29,8 +30,8 @@
                    HorizontalOptions="Center"
                    Margin="0,0,0,20"/>
 
-            <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="EndAndExpand">
-                <Entry Placeholder="Pesquisar" WidthRequest="200" Text="{Binding SearchTerm}"/>
+            <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                <Entry Placeholder="Pesquisar" HorizontalOptions="FillAndExpand" Text="{Binding SearchTerm}"/>
                 <Button Text="Buscar" Command="{Binding SearchCommand}" Margin="10,0,0,0"/>
             </StackLayout>
 
@@ -38,17 +39,17 @@
                 <Entry Placeholder="Matrícula" Text="{Binding Matricula}"/>
                 <Entry Placeholder="Nome" Text="{Binding Nome}"/>
                 <Entry Placeholder="GHE" Text="{Binding Ghe}"/>
-                <Editor Placeholder="Descrição de atividades" Text="{Binding DescricaoAtividades}"/>
+                <Editor Placeholder="Descrição de atividades" HeightRequest="200" Text="{Binding DescricaoAtividades}"/>
             </StackLayout>
 
             <StackLayout Grid.Row="3" Orientation="Horizontal" Margin="0,10,0,20">
-                <CheckBox IsChecked="{Binding Insalubridade}"/>
+                <RadioButton IsChecked="{Binding Insalubridade}"/>
                 <Label Text="Insalubridade" VerticalOptions="Center"/>
 
-                <CheckBox IsChecked="{Binding Periculosidade}" Margin="10,0,0,0"/>
+                <RadioButton IsChecked="{Binding Periculosidade}" Margin="10,0,0,0"/>
                 <Label Text="Periculosidade" VerticalOptions="Center"/>
 
-                <CheckBox IsChecked="{Binding NaoAplica}" Margin="10,0,0,0"/>
+                <RadioButton IsChecked="{Binding NaoAplica}" Margin="10,0,0,0"/>
                 <Label Text="Não Aplica" VerticalOptions="Center"/>
             </StackLayout>
 
@@ -57,32 +58,71 @@
                 <Button Text="Adicionar treinamento" HorizontalOptions="EndAndExpand" Command="{Binding AddTrainingCommand}" Margin="10,0,0,0"/>
             </StackLayout>
 
-            <StackLayout Grid.Row="5" Margin="0,10,0,20" Spacing="15">
-                <Entry Placeholder="Treinamento" Text="{Binding NewTraining.TrainingName}" HorizontalOptions="FillAndExpand"/>
-                <DatePicker Format="dd/MM/yyyy" Date="{Binding NewTraining.TrainingDate}" HorizontalOptions="FillAndExpand"/>
-                <Entry Placeholder="ASO" Text="{Binding NewTraining.ASO}" HorizontalOptions="FillAndExpand"/>
-                <DatePicker Format="dd/MM/yyyy" Date="{Binding NewTraining.TrainingDateFinal}" HorizontalOptions="FillAndExpand"/>
+            <StackLayout Grid.Row="5" Margin="0,10,0,20" Spacing="15" HorizontalOptions="FillAndExpand">
+                <Grid ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Entry Grid.Column="0" Placeholder="Treinamento" Text="{Binding NewTraining.TrainingName}" />
+                    <DatePicker Grid.Column="1" Format="dd/MM/yyyy" Date="{Binding NewTraining.TrainingDate}" />
+                </Grid>
+
+                <Grid ColumnSpacing="10" Margin="0,15,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Entry Grid.Column="0" Placeholder="ASO" Text="{Binding NewTraining.ASO}" />
+                    <DatePicker Grid.Column="1" Format="dd/MM/yyyy" Date="{Binding NewTraining.TrainingDateFinal}" />
+                </Grid>
             </StackLayout>
 
-            <CollectionView Grid.Row="6" ItemsSource="{Binding Trainings}">
+            <CollectionView Grid.Row="6" ItemsSource="{Binding Trainings}" Margin="0">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="0"/>
+                </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <StackLayout Orientation="Horizontal" Padding="10" BackgroundColor="DarkGray" Margin="0,5,0,5">
-                            <Label Text="{Binding TrainingName}" TextColor="{StaticResource White}"  HorizontalOptions="StartAndExpand" WidthRequest="200"/>
-                            <Label Text="{Binding TrainingDate, StringFormat='{0:dd/MM/yyyy}'}" TextColor="{StaticResource White}" HorizontalOptions="Center" WidthRequest="50"/>
-                            <Label Text="{Binding ASO}" TextColor="{StaticResource White}" HorizontalOptions="Center" WidthRequest="100"/>
-                            <Label Text="{Binding TrainingDateFinal, StringFormat='{0:dd/MM/yyyy}'}" TextColor="{StaticResource White}" HorizontalOptions="EndAndExpand" WidthRequest="50"/>
-                            <Button Text="Excluir" Command="{Binding BindingContext.DeleteTrainingCommand, Source={x:Reference Page}}" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White"/>
-                        </StackLayout>
+                        <Grid Padding="10" BackgroundColor="#2C2F33">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0" Text="{Binding TrainingName}" TextColor="#FFFFFF" VerticalTextAlignment="Center"/>
+
+                            <Label Grid.Column="1" Text="{Binding TrainingDate, StringFormat='{0:dd/MM/yyyy}'}" TextColor="#FFFFFF" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+
+                            <Label Grid.Column="2" Text="{Binding ASO}" TextColor="#FFFFFF" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+
+                            <Label Grid.Column="3" Text="{Binding TrainingDateFinal, StringFormat='{0:dd/MM/yyyy}'}" TextColor="#FFFFFF" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+
+                            <Button Grid.Column="4" Text="Excluir" Command="{Binding BindingContext.DeleteTrainingCommand, Source={x:Reference Page}}" CommandParameter="{Binding .}" BackgroundColor="#FF5555" TextColor="#FFFFFF" Margin="5,0"/>
+                        </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <StackLayout Grid.Row="7" Orientation="Horizontal" HorizontalOptions="Center" Margin="0,20,0,0">
-                <Button Text="NOVO" BackgroundColor="Gray" TextColor="{StaticResource White}" Command="{Binding NewCommand}"/>
-                <Button Text="SALVAR" BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource White}" Command="{Binding SaveCommand}"/>
-                <Button Text="EXCLUIR" BackgroundColor="Red" TextColor="{StaticResource White}" Command="{Binding DeleteCommand}"/>
-            </StackLayout>
+            <Grid Grid.Row="7" Margin="0,20,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Text="NOVO" Command="{Binding NewCommand}" HorizontalOptions="Start" WidthRequest="100"/>
+
+                <BoxView Grid.Column="1" BackgroundColor="Transparent"/>
+
+                <StackLayout Grid.Column="2" Orientation="Horizontal" Spacing="10">
+                    <Button Text="SALVAR" BackgroundColor="#81C784" Command="{Binding SaveCommand}" WidthRequest="100"/>
+                    <Button Text="EXCLUIR" BackgroundColor="#E57373" Command="{Binding DeleteCommand}" WidthRequest="100"/>
+                </StackLayout>
+            </Grid>
         </Grid>
     </ScrollView>
 </ContentPage>

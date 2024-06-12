@@ -52,8 +52,7 @@ public partial class CreateAndEditGheViewModel : ObservableObject
     [RelayCommand]
     private void AddTraining()
     {
-        if (!string.IsNullOrWhiteSpace(NewTraining.TrainingName) &&
-            !string.IsNullOrWhiteSpace(NewTraining.ASO))
+        if (!string.IsNullOrWhiteSpace(NewTraining.TrainingName))
         {
             Trainings.Add(new Training
             {
@@ -90,9 +89,12 @@ public partial class CreateAndEditGheViewModel : ObservableObject
             NaoAplica = ghe.NotApplicable;
 
             Trainings.Clear();
-            foreach (var training in await _trainingRepository.GetByGheIdAsync(ghe.Id))
+            if (ghe.Id != Guid.Empty)
             {
-                Trainings.Add(training);
+                foreach (var training in await _trainingRepository.GetByGheIdAsync(ghe.Id))
+                {
+                    Trainings.Add(training);
+                }
             }
         }
         else
@@ -119,6 +121,15 @@ public partial class CreateAndEditGheViewModel : ObservableObject
     [RelayCommand]
     private async Task Save()
     {
+        if (string.IsNullOrWhiteSpace(Matricula) ||
+            string.IsNullOrWhiteSpace(Nome) ||
+            string.IsNullOrWhiteSpace(Ghe) ||
+            string.IsNullOrWhiteSpace(DescricaoAtividades))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "Preencha todos os campos", "OK");
+            return;
+        }
+
         if (_currentGhe != null)
         {
             _currentGhe.Matricule = Matricula;
@@ -136,7 +147,6 @@ public partial class CreateAndEditGheViewModel : ObservableObject
                 if (training.GheId == Guid.Empty)
                 {
                     training.GheId = _currentGhe.Id;
-                    training.TrainingDate = training.TrainingDate ?? DateTime.Now;
                     await _trainingRepository.AddAsync(training);
                 }
                 else
@@ -275,9 +285,9 @@ public partial class CreateAndEditGheViewModel : ObservableObject
                 foreach (var training in Trainings)
                 {
                     table.AddCell(training.TrainingName ?? "");
-                    table.AddCell(training.TrainingDate?.ToString("yyyy-MM-dd") ?? "");
+                    table.AddCell(training.TrainingDate.ToString("yyyy-MM-dd") ?? "");
                     table.AddCell(training.ASO ?? "");
-                    table.AddCell(training.TrainingDateFinal?.ToString("yyyy-MM-dd") ?? "");
+                    table.AddCell(training.TrainingDateFinal.ToString("yyyy-MM-dd") ?? "");
                 }
                 document.Add(table);
             }
@@ -285,5 +295,90 @@ public partial class CreateAndEditGheViewModel : ObservableObject
             document.Close();
             writer.Close();
         }
+    }
+
+    [RelayCommand]
+    public async Task SaveAllReports()
+    {
+        try
+        {
+            string downloadsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
+            string fileName = $"Relatorio_Todos_GHEs.pdf";
+            string filePath = Path.Combine(downloadsPath, fileName);
+
+            var allGheRecords = await _gheRepository.GetAllAsync();
+            using (var document = new Document())
+            {
+                PdfWriter writer = PdfWriter.GetInstance(document, new FileStream(filePath, FileMode.Create));
+                document.Open();
+
+                foreach (var ghe in allGheRecords)
+                {
+                    await CreatePdfReportForAll(ghe, document);
+                }
+
+                document.Close();
+                writer.Close();
+            }
+
+            await Application.Current.MainPage.DisplayAlert("Success", "Todos os PDFs foram criados com sucesso em downloads", "OK");
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "Erro ao criar PDFs: " + ex.Message, "OK");
+        }
+    }
+
+    public async Task CreatePdfReportForAll(Ghe ghe, Document document)
+    {
+        var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18);
+        var title = new Paragraph($"Relatório GHE: {ghe.Name}", titleFont)
+        {
+            Alignment = iTextSharp.text.Element.ALIGN_CENTER,
+            SpacingAfter = 20
+        };
+        document.Add(title);
+
+        if (ghe != null)
+        {
+            document.Add(new Paragraph($"Matricula: {ghe.Matricule}"));
+            document.Add(new Paragraph($"Nome: {ghe.Name}"));
+            document.Add(new Paragraph($"GHE: {ghe.GHE}"));
+            document.Add(new Paragraph($"Descrição: {ghe.Description}"));
+
+            if (ghe.Unhealthiness)
+                document.Add(new Paragraph($"Insalubridade"));
+            if (ghe.Dangerousness)
+                document.Add(new Paragraph($"Periculosidade"));
+            if (ghe.NotApplicable)
+                document.Add(new Paragraph("Não aplicado"));
+        }
+
+        document.Add(new Paragraph("Treinamentos:\n\n"));
+
+        var trainings = await _trainingRepository.GetByGheIdAsync(ghe.Id);
+
+        if (trainings != null && trainings.Count() > 0)
+        {
+            PdfPTable table = new PdfPTable(4) { WidthPercentage = 100 };
+            table.AddCell("Treinamento");
+            table.AddCell("Data do treinamento");
+            table.AddCell("ASO");
+            table.AddCell("Data do ASO");
+
+            foreach (var training in trainings)
+            {
+                if (training is not null)
+                {
+                    table.AddCell(training.TrainingName ?? "");
+                    table.AddCell(training.TrainingDate.ToString("yyyy-MM-dd") ?? "");
+                    table.AddCell(training.ASO ?? "");
+                    table.AddCell(training.TrainingDateFinal.ToString("yyyy-MM-dd") ?? "");
+                }
+            }
+            document.Add(table);
+        }
+
+        document.NewPage();
     }
 }

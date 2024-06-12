@@ -38,6 +38,12 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(Configuration)' == 'Release'">
+		<AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
+		<PackageCertificateThumbprint>D04B9496308345C8EF93F4788891B5A398F3A098</PackageCertificateThumbprint>
+	</PropertyGroup>
+
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -79,8 +85,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\GHE.Domain\GHE.Domain.csproj" />
-	  <ProjectReference Include="..\GHE.InfraData\GHE.InfraData.csproj" />
+	  <ProjectReference Include="..\GHE.DomainBuild\GHE.DomainBuild.csproj" />
+	  <ProjectReference Include="..\GHE.Infra.DataBuild\GHE.Infra.DataBuild.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

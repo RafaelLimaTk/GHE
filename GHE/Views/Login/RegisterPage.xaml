@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:GHE.ViewModels.Login"
              x:Class="GHE.Views.Login.RegisterPage"
-             Title="RegisterPage">
+             Title="Registrar"
+             NavigationPage.HasNavigationBar="False">
     <ContentPage.BindingContext>
         <vm:RegisterViewModel />
     </ContentPage.BindingContext>
