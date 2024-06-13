@@ -1,4 +1,6 @@
-﻿namespace GHE
+﻿using GHE.Extensions;
+
+namespace GHE
 {
     public partial class App : Application
     {
@@ -7,6 +9,13 @@
             InitializeComponent();
 
             MainPage = new AppShell();
+
+            OnSleep();
+        }
+
+        protected override void OnSleep()
+        {
+            UserAuth.RemoveUserAuth();
         }
     }
 }
