@@ -11,8 +11,9 @@
     </ContentPage.BindingContext>
 
     <ScrollView>
-        <Grid Padding="20" WidthRequest="800" HorizontalOptions="Center" RowSpacing="10">
+        <Grid Padding="20" WidthRequest="1200" HorizontalOptions="Center" RowSpacing="10">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -23,26 +24,68 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="0"
-                   Text="CADASTRO ENQUADRAMENTO GHE"
-                   FontSize="Large"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   Margin="0,0,0,20"/>
+            <VerticalStackLayout WidthRequest="1200" Margin="0,0,0,20">
+                <Label Text="Cadastro de GHE"
+                   HorizontalOptions="Start"
+                   VerticalOptions="Start"
+                   FontSize="Large" />
 
-            <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                <Label Text="Cadastre seu GHE aqui para garantir a gestão eficiente de riscos."
+                   HorizontalOptions="Start"
+                   VerticalOptions="Start"
+                   TextColor="{StaticResource Gray400}"
+                   FontSize="Micro" />
+            </VerticalStackLayout>
+
+            <!--<StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                 <Entry Placeholder="Pesquisar" HorizontalOptions="FillAndExpand" Text="{Binding SearchTerm}"/>
                 <Button Text="Buscar" Command="{Binding SearchCommand}" Margin="10,0,0,0"/>
-            </StackLayout>
+            </StackLayout>-->
 
-            <StackLayout Grid.Row="2" Margin="0,20,0,20" Spacing="15">
+            <VerticalStackLayout Grid.Row="1" WidthRequest="1200">
+                <Grid Grid.Row="1" RowDefinitions="Auto,Auto" ColumnDefinitions="*,*" RowSpacing="15" ColumnSpacing="10">
+
+                    <Label Text="Pesquisar"
+                           FontSize="Micro"
+                           Grid.Row="0"
+                           Grid.Column="0"
+                           HorizontalOptions="Start" />
+
+                    <SearchBar Placeholder="Nome, Matricula e GHE"
+                            Text="{Binding SearchTerm}"
+                            SearchCommand="{Binding SearchCommand}"
+                            SearchCommandParameter="{Binding SearchTerm}"
+                            Grid.Row="1"
+                            Grid.Column="0" />
+
+                    <!--<Label Text="Data do treinamento"
+                   FontSize="Micro"
+                   Grid.Row="0"
+                   Grid.Column="1"
+                   HorizontalOptions="Start"/>
+
+                <Picker
+                    ItemsSource="{Binding Anos}"
+                    SelectedItem="{Binding AnoSelecionado}"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    WidthRequest="600"/>-->
+
+                </Grid>
+            </VerticalStackLayout>
+
+            <StackLayout Grid.Row="2" Margin="0,20,0,20" Spacing="15" WidthRequest="1200">
                 <Entry Placeholder="Matrícula" Text="{Binding Matricula}"/>
                 <Entry Placeholder="Nome" Text="{Binding Nome}"/>
                 <Entry Placeholder="GHE" Text="{Binding Ghe}"/>
                 <Editor Placeholder="Descrição de atividades" HeightRequest="200" Text="{Binding DescricaoAtividades}"/>
             </StackLayout>
 
-            <StackLayout Grid.Row="3" Orientation="Horizontal" Margin="0,10,0,20">
+            <StackLayout Grid.Row="3" WidthRequest="1200">
+                <Label Text="Adicional" FontSize="Micro" HorizontalOptions="Start" WidthRequest="1200"/>
+            </StackLayout>
+
+            <StackLayout Grid.Row="4" Orientation="Horizontal" Margin="0,10,0,20" WidthRequest="1200">
                 <RadioButton IsChecked="{Binding Insalubridade}"/>
                 <Label Text="Insalubridade" VerticalOptions="Center"/>
 
@@ -53,12 +96,12 @@
                 <Label Text="Não Aplica" VerticalOptions="Center"/>
             </StackLayout>
 
-            <StackLayout Grid.Row="4" Orientation="Horizontal" Margin="0,10,0,20">
-                <Label Text="Treinamentos" FontAttributes="Bold" FontSize="Medium" VerticalOptions="Center"/>
-                <Button Text="Adicionar treinamento" HorizontalOptions="EndAndExpand" Command="{Binding AddTrainingCommand}" Margin="10,0,0,0"/>
+            <StackLayout Grid.Row="5" Orientation="Horizontal" Margin="0,10,0,20" WidthRequest="1200">
+                <Label Text="Treinamentos" FontSize="Micro" VerticalOptions="Center"/>
+                <Button Text="Adicionar treinamento" TextColor="White" HorizontalOptions="EndAndExpand" Command="{Binding AddTrainingCommand}" Margin="10,0,0,0"/>
             </StackLayout>
 
-            <StackLayout Grid.Row="5" Margin="0,10,0,20" Spacing="15" HorizontalOptions="FillAndExpand">
+            <StackLayout Grid.Row="6" Margin="0,10,0,20" Spacing="15" HorizontalOptions="FillAndExpand" WidthRequest="1200">
                 <Grid ColumnSpacing="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -78,13 +121,13 @@
                 </Grid>
             </StackLayout>
 
-            <CollectionView Grid.Row="6" ItemsSource="{Binding Trainings}" Margin="0">
+            <CollectionView Grid.Row="7" ItemsSource="{Binding Trainings}" Margin="0" WidthRequest="1200">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="0"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="10" BackgroundColor="#2C2F33">
+                        <Grid Padding="10" BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#202B3C}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3*"/>
                                 <ColumnDefinition Width="2*"/>
@@ -93,13 +136,13 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Label Grid.Column="0" Text="{Binding TrainingName}" TextColor="#FFFFFF" VerticalTextAlignment="Center"/>
+                            <Label Grid.Column="0" Text="{Binding TrainingName}" TextColor="{AppThemeBinding Light=#121A26, Dark=#FFFFFF}" VerticalTextAlignment="Center"/>
 
-                            <Label Grid.Column="1" Text="{Binding TrainingDate, StringFormat='{0:dd/MM/yyyy}'}" TextColor="#FFFFFF" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                            <Label Grid.Column="1" Text="{Binding TrainingDate, StringFormat='{0:dd/MM/yyyy}'}" TextColor="{AppThemeBinding Light=#121A26, Dark=#FFFFFF}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
 
-                            <Label Grid.Column="2" Text="{Binding ASO}" TextColor="#FFFFFF" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                            <Label Grid.Column="2" Text="{Binding ASO}" TextColor="{AppThemeBinding Light=#121A26, Dark=#FFFFFF}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
 
-                            <Label Grid.Column="3" Text="{Binding TrainingDateFinal, StringFormat='{0:dd/MM/yyyy}'}" TextColor="#FFFFFF" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                            <Label Grid.Column="3" Text="{Binding TrainingDateFinal, StringFormat='{0:dd/MM/yyyy}'}" TextColor="{AppThemeBinding Light=#121A26, Dark=#FFFFFF}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
 
                             <Button Grid.Column="4" Text="Excluir" Command="{Binding BindingContext.DeleteTrainingCommand, Source={x:Reference Page}}" CommandParameter="{Binding .}" BackgroundColor="#FF5555" TextColor="#FFFFFF" Margin="5,0"/>
                         </Grid>
@@ -107,20 +150,20 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Grid Grid.Row="7" Margin="0,20,0,0">
+            <Grid Grid.Row="8" Margin="0,20,0,0" WidthRequest="1200">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="0" Text="NOVO" Command="{Binding NewCommand}" HorizontalOptions="Start" WidthRequest="100"/>
+                <Button Grid.Column="0" Text="Novo" TextColor="White" Command="{Binding NewCommand}" HorizontalOptions="Start" WidthRequest="100"/>
 
                 <BoxView Grid.Column="1" BackgroundColor="Transparent"/>
 
                 <StackLayout Grid.Column="2" Orientation="Horizontal" Spacing="10">
-                    <Button Text="SALVAR" BackgroundColor="#81C784" Command="{Binding SaveCommand}" WidthRequest="100"/>
-                    <Button Text="EXCLUIR" BackgroundColor="#E57373" Command="{Binding DeleteCommand}" WidthRequest="100"/>
+                    <Button Text="Salvar" TextColor="White" Command="{Binding SaveCommand}" WidthRequest="100"/>
+                    <Button Text="Excluir" TextColor="White" Command="{Binding DeleteCommand}" WidthRequest="100"/>
                 </StackLayout>
             </Grid>
         </Grid>

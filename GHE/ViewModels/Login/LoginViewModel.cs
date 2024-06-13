@@ -14,7 +14,7 @@ public partial class LoginViewModel : ObservableObject
     string? password;
 
     [ObservableProperty]
-    bool isBusy;
+    bool rememberMe;
 
     private readonly IUserRepository _userRepository;
     public LoginViewModel()
@@ -35,7 +35,7 @@ public partial class LoginViewModel : ObservableObject
 
         if (user != null)
         {
-            if (isBusy)
+            if (rememberMe)
                 UserAuth.SetUserAuth(user);
 
             await Shell.Current.GoToAsync("criarghe");
@@ -48,11 +48,5 @@ public partial class LoginViewModel : ObservableObject
     public async Task GoToRegister()
     {
         await Shell.Current.GoToAsync("register");
-    }
-
-    [RelayCommand]
-    private async Task GoToSearchGhe()
-    {
-        await Shell.Current.GoToAsync("ghe");
     }
 }

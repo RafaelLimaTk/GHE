@@ -33,8 +33,8 @@ namespace GHE
             #region Pages
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<RegisterPage>();
-            builder.Services.AddTransient<GhePage>();
             builder.Services.AddTransient<CreateGhePage>();
+            builder.Services.AddTransient<GheHomePage>();
             #endregion
 
 #if DEBUG

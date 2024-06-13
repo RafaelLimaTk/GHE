@@ -5,16 +5,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:login="clr-namespace:GHE.Views.Login"
     xmlns:ghes="clr-namespace:GHE.Views.Ghes"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False"
+    Shell.FlyoutBehavior="Disabled"
     Title="GHE">
 
 
-    <ShellContent
+    <!--<ShellContent
         Title="Login"
         ContentTemplate="{DataTemplate login:LoginPage}"
-        Route="Login" />
+        Route="Login" />-->
 
     <FlyoutItem  Title="Pesquisar GHE">
-        <ShellContent ContentTemplate="{DataTemplate ghes:GhePage}" />
+        <ShellContent ContentTemplate="{DataTemplate ghes:GheHomePage}" />
     </FlyoutItem>
 
 </Shell>

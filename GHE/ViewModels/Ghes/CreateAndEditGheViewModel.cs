@@ -1,8 +1,8 @@
-﻿using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GHE.Domain.Entities;
 using GHE.Domain.Interfaces;
+using GHE.Extensions;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.Collections.ObjectModel;
@@ -38,6 +38,11 @@ public partial class CreateAndEditGheViewModel : ObservableObject
     [ObservableProperty]
     private Training newTraining = new Training();
 
+    [ObservableProperty]
+    private ObservableCollection<Ghe> gheListFilter;
+
+    private List<Ghe> _gheListFull;
+
     public ObservableCollection<Training> Trainings { get; } = new ObservableCollection<Training>();
 
     private readonly ITrainingRepository _trainingRepository;
@@ -47,6 +52,35 @@ public partial class CreateAndEditGheViewModel : ObservableObject
     {
         _trainingRepository = App.Current.Handler.MauiContext.Services.GetService<ITrainingRepository>();
         _gheRepository = App.Current.Handler.MauiContext.Services.GetService<IGheRepository>();
+
+        Sincronization();
+    }
+
+    [RelayCommand]
+    private void Sincronization()
+    {
+        _gheListFull = _gheRepository.GetAllIncludeTrainingsAsync().Result.ToList();
+        GheListFilter = new ObservableCollection<Ghe>(_gheListFull);
+    }
+
+    [RelayCommand]
+    private void SearchList()
+    {
+        if (string.IsNullOrWhiteSpace(SearchTerm))
+        {
+            GheListFilter = new ObservableCollection<Ghe>(_gheListFull);
+        }
+        else
+        {
+            var lowerCaseSearchTerm = SearchTerm.ToLower();
+            var filteredList = _gheListFull
+                .Where(g => g.Matricule.ToLower().Contains(lowerCaseSearchTerm) ||
+                            g.Name.ToLower().Contains(lowerCaseSearchTerm) ||
+                            g.GHE.ToLower().Contains(lowerCaseSearchTerm))
+                .ToList();
+
+            GheListFilter = new ObservableCollection<Ghe>(filteredList);
+        }
     }
 
     [RelayCommand]
@@ -56,7 +90,7 @@ public partial class CreateAndEditGheViewModel : ObservableObject
         {
             Trainings.Add(new Training
             {
-                TrainingName = NewTraining.TrainingName,
+                TrainingName = NewTraining.TrainingName.Trim(),
                 TrainingDate = NewTraining.TrainingDate,
                 ASO = NewTraining.ASO,
                 TrainingDateFinal = NewTraining.TrainingDateFinal,
@@ -76,7 +110,7 @@ public partial class CreateAndEditGheViewModel : ObservableObject
             return;
         }
 
-        var ghe = await _gheRepository.GetByMatriculaOrNomeAsync(SearchTerm);
+        var ghe = await _gheRepository.GetByMatriculaOrNomeAsync(SearchTerm.Trim());
         if (ghe != null)
         {
             _currentGhe = ghe;
@@ -93,13 +127,15 @@ public partial class CreateAndEditGheViewModel : ObservableObject
             {
                 foreach (var training in await _trainingRepository.GetByGheIdAsync(ghe.Id))
                 {
+                    if (training is null)
+                        continue;
                     Trainings.Add(training);
                 }
             }
         }
         else
         {
-            await Toast.Make("Não existe GHE cadastrado").Show();
+            await Application.Current.MainPage.DisplayAlert("Error", "Não existe GHE cadastrado", "OK");
         }
     }
 
@@ -126,114 +162,140 @@ public partial class CreateAndEditGheViewModel : ObservableObject
             string.IsNullOrWhiteSpace(Ghe) ||
             string.IsNullOrWhiteSpace(DescricaoAtividades))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "Preencha todos os campos", "OK");
+            await Application.Current.MainPage.DisplayAlert("Erro", "Preencha todos os campos", "OK");
             return;
         }
 
-        if (_currentGhe != null)
+        try
         {
-            _currentGhe.Matricule = Matricula;
-            _currentGhe.Name = Nome;
-            _currentGhe.GHE = Ghe;
-            _currentGhe.Description = DescricaoAtividades;
-            _currentGhe.Unhealthiness = Insalubridade;
-            _currentGhe.Dangerousness = Periculosidade;
-            _currentGhe.NotApplicable = NaoAplica;
-
-            await _gheRepository.UpdateAsync(_currentGhe);
-
-            foreach (var training in Trainings)
+            if (_currentGhe != null)
             {
-                if (training.GheId == Guid.Empty)
+                _currentGhe.Matricule = Matricula.Trim();
+                _currentGhe.Name = Nome.Trim();
+                _currentGhe.GHE = Ghe.Trim();
+                _currentGhe.Description = DescricaoAtividades;
+                _currentGhe.Unhealthiness = Insalubridade;
+                _currentGhe.Dangerousness = Periculosidade;
+                _currentGhe.NotApplicable = NaoAplica;
+
+                await _gheRepository.UpdateAsync(_currentGhe);
+
+                foreach (var training in Trainings)
+                {
+                    if (training.GheId == Guid.Empty)
+                    {
+                        training.GheId = _currentGhe.Id;
+                        await _trainingRepository.AddAsync(training);
+                    }
+                    else
+                    {
+                        await _trainingRepository.UpdateAsync(training);
+                    }
+                }
+
+                await Application.Current.MainPage.DisplayAlert("Sucesso", "GHE atualizado com sucesso", "OK");
+            }
+            else
+            {
+                var newGhe = new Ghe
+                {
+                    Matricule = Matricula.Trim(),
+                    Name = Nome.Trim(),
+                    GHE = Ghe.Trim(),
+                    Description = DescricaoAtividades,
+                    Unhealthiness = Insalubridade,
+                    Dangerousness = Periculosidade,
+                    NotApplicable = NaoAplica
+                };
+
+                await _gheRepository.AddAsync(newGhe);
+                _currentGhe = newGhe;
+
+                foreach (var training in Trainings)
                 {
                     training.GheId = _currentGhe.Id;
                     await _trainingRepository.AddAsync(training);
                 }
-                else
-                {
-                    await _trainingRepository.UpdateAsync(training);
-                }
+
+                await Application.Current.MainPage.DisplayAlert("Sucesso", "GHE criado com sucesso", "OK");
             }
-            await Toast.Make("GHE atualizado com sucesso").Show();
+            New();
         }
-        else
+        catch (Exception ex)
         {
-            var newGhe = new Ghe
-            {
-                Matricule = Matricula,
-                Name = Nome,
-                GHE = Ghe,
-                Description = DescricaoAtividades,
-                Unhealthiness = Insalubridade,
-                Dangerousness = Periculosidade,
-                NotApplicable = NaoAplica
-            };
-
-            await _gheRepository.AddAsync(newGhe);
-            _currentGhe = newGhe;
-
-            foreach (var training in Trainings)
-            {
-                training.GheId = _currentGhe.Id;
-                await _trainingRepository.AddAsync(training);
-            }
-            await Toast.Make("GHE criado com sucesso").Show();
+            await Application.Current.MainPage.DisplayAlert("Erro", $"Não foi possível salvar o GHE: {ex.Message}", "OK");
         }
     }
+
 
     [RelayCommand]
     private async Task Delete()
     {
-        if (_currentGhe != null)
+        if (_currentGhe == null)
+        {
+            await Application.Current.MainPage.DisplayAlert("Erro", "GHE atual não é válido", "OK");
+            return;
+        }
+
+        try
         {
             await _gheRepository.DeleteAsync(_currentGhe.Id);
-            foreach (var training in Trainings)
-            {
-                await _trainingRepository.DeleteAsync(training.Id);
-            }
-
-            await Toast.Make("GHE Deletado com sucesso").Show();
+            await Application.Current.MainPage.DisplayAlert("Sucesso", "GHE Deletado com sucesso", "OK");
 
             New();
         }
-        else
+        catch (Exception ex)
         {
-            await Toast.Make("Não foi possivel deletar o GHE").Show();
+            await Application.Current.MainPage.DisplayAlert("Erro", $"Não foi possível deletar o GHE: {ex.Message}", "OK");
         }
     }
 
     [RelayCommand]
     private async Task DeleteTraining(Training training)
     {
-        if (training != null)
+        if (training == null)
+        {
+            await Application.Current.MainPage.DisplayAlert("Erro", "Treinamento inválido", "OK");
+            return;
+        }
+
+        try
         {
             Trainings.Remove(training);
 
             if (training.GheId != Guid.Empty)
             {
-                await _trainingRepository.DeleteAsync(training.Id);
+                await _trainingRepository.DeleteAsync(training.Id).ConfigureAwait(false);
             }
 
-            await Toast.Make("Treinamento excluído com sucesso").Show();
+            await Application.Current.MainPage.DisplayAlert("Sucesso", "Treinamento excluído com sucesso", "OK");
         }
-        else
+        catch (Exception ex)
         {
-            await Toast.Make("Não foi possível excluir o treinamento").Show();
+            await Application.Current.MainPage.DisplayAlert("Erro", $"Não foi possível excluir o treinamento: {ex.Message}", "OK");
         }
     }
 
     [RelayCommand]
-    public async Task SaveReport()
+    public async Task SaveReport(Guid id)
     {
         try
         {
-            string downloadsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
-            string fileName = $"Relatorio {_currentGhe.Name}";
-            if (!string.IsNullOrEmpty(fileName))
+            var ghe = await _gheRepository.GetByIdAsync(id);
+            if (ghe != null)
             {
-                string filePath = Path.Combine(downloadsPath, fileName + ".pdf");
-                CreatePdfReport(filePath);
-                await Application.Current.MainPage.DisplayAlert("Success", "PDF criado com sucesso em downloads", "OK");
+                string downloadsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
+                string fileName = $"Relatorio {ghe.Name}";
+                if (!string.IsNullOrEmpty(fileName))
+                {
+                    string filePath = Path.Combine(downloadsPath, fileName + ".pdf");
+                    CreatePdfReport(filePath, ghe);
+                    await Application.Current.MainPage.DisplayAlert("Success", "PDF criado com sucesso em downloads", "OK");
+                }
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "GHE não encontrado", "OK");
             }
         }
         catch (Exception ex)
@@ -242,7 +304,7 @@ public partial class CreateAndEditGheViewModel : ObservableObject
         }
     }
 
-    public void CreatePdfReport(string filePath)
+    public async Task CreatePdfReport(string filePath, Ghe ghe)
     {
         using (var document = new Document())
         {
@@ -257,24 +319,23 @@ public partial class CreateAndEditGheViewModel : ObservableObject
             };
             document.Add(title);
 
-            if (_currentGhe != null)
-            {
-                document.Add(new Paragraph($"Matricula: {_currentGhe.Matricule}"));
-                document.Add(new Paragraph($"Nome: {_currentGhe.Name}"));
-                document.Add(new Paragraph($"GHE: {_currentGhe.GHE}"));
-                document.Add(new Paragraph($"Descrição: {_currentGhe.Description}"));
+            document.Add(new Paragraph($"Matricula: {ghe.Matricule}"));
+            document.Add(new Paragraph($"Nome: {ghe.Name}"));
+            document.Add(new Paragraph($"GHE: {ghe.GHE}"));
+            document.Add(new Paragraph($"Descrição: {ghe.Description}"));
 
-                if (_currentGhe.Unhealthiness)
-                    document.Add(new Paragraph($"Insalubridade"));
-                if (_currentGhe.Dangerousness)
-                    document.Add(new Paragraph($"Periculosidade"));
-                if (_currentGhe.NotApplicable)
-                    document.Add(new Paragraph("Não aplicado"));
-            }
+            if (ghe.Unhealthiness)
+                document.Add(new Paragraph($"Insalubridade"));
+            if (ghe.Dangerousness)
+                document.Add(new Paragraph($"Periculosidade"));
+            if (ghe.NotApplicable)
+                document.Add(new Paragraph("Não aplicado"));
 
             document.Add(new Paragraph("Treinamentos:\n\n"));
 
-            if (Trainings != null && Trainings.Count > 0)
+            var Trainings = await _trainingRepository.GetByGheIdAsync(ghe.Id);
+
+            if (Trainings != null && Trainings.Count() > 0)
             {
                 PdfPTable table = new PdfPTable(4) { WidthPercentage = 100 };
                 table.AddCell("Treinamento");
@@ -380,5 +441,19 @@ public partial class CreateAndEditGheViewModel : ObservableObject
         }
 
         document.NewPage();
+    }
+
+    [RelayCommand]
+    public async Task GoToCreateGhe()
+    {
+        var user = UserAuth.GetUserAuth();
+        if (user == null)
+        {
+            await Shell.Current.GoToAsync("login");
+        }
+        else
+        {
+            await Shell.Current.GoToAsync("criarghe");
+        }
     }
 }

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GHE.ViewModels.Ghes"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="GHE.Views.Ghes.GheHomePage"
+             Title="GheHomePage"
+             x:Name="ListGheVM">
+
+    <ContentPage.BindingContext>
+        <vm:CreateAndEditGheViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid Padding="60, 60" RowSpacing="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" WidthRequest="1200">
+            <VerticalStackLayout Grid.Column="0">
+                <Label Text="Bem vindo"
+               HorizontalOptions="Start"
+               VerticalOptions="Start"
+               FontSize="Large" />
+
+                <Label Text="Veja todos os GHE aqui"
+               HorizontalOptions="Start"
+               VerticalOptions="Start"
+               TextColor="{StaticResource Gray400}"
+               FontSize="Micro" />
+            </VerticalStackLayout>
+
+            <HorizontalStackLayout Grid.Column="1" HorizontalOptions="Start" Spacing="10">
+                <Button ImageSource="arrow_repeat.png" Text="Sincronizar dados"
+                    Command="{Binding SincronizationCommand}"
+                    VerticalOptions="Center"
+                    TextColor="White"
+                    WidthRequest="200" />
+                <Button ImageSource="printer.png" Text="Exportar todos os GHE"
+                    Command="{Binding SaveAllReportsCommand}"
+                    VerticalOptions="Center"
+                    TextColor="White"
+                    WidthRequest="200" />
+                <Button Text="Cadastrar GHE"
+                    Command="{Binding GoToCreateGheCommand}"
+                    VerticalOptions="Center"
+                    TextColor="White"
+                    WidthRequest="150" />
+            </HorizontalStackLayout>
+        </Grid>
+
+        <VerticalStackLayout Grid.Row="1" WidthRequest="1200">
+            <Grid Grid.Row="1" RowDefinitions="Auto,Auto" ColumnDefinitions="*,*" RowSpacing="15" ColumnSpacing="10">
+
+                <Label Text="Pesquisar"
+                   FontSize="Micro"
+                   Grid.Row="0"
+                   Grid.Column="0"
+                   HorizontalOptions="Start" />
+
+                <SearchBar Placeholder="Nome, Matricula e GHE"
+                    Text="{Binding SearchTerm}"
+                    SearchCommand="{Binding SearchListCommand}"
+                    SearchCommandParameter="{Binding SearchTerm}"
+                    Grid.Row="1"
+                    Grid.Column="0">
+
+                    <SearchBar.Behaviors>
+                        <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchListCommand}" CommandParameter="{Binding SearchTerm}" />
+                    </SearchBar.Behaviors>
+
+                </SearchBar>
+
+                <!--<Label Text="Data do treinamento"
+                   FontSize="Micro"
+                   Grid.Row="0"
+                   Grid.Column="1"
+                   HorizontalOptions="Start"/>
+
+                <Picker
+                    ItemsSource="{Binding Anos}"
+                    SelectedItem="{Binding AnoSelecionado}"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    WidthRequest="600"/>-->
+
+            </Grid>
+        </VerticalStackLayout>
+
+        <CollectionView ItemsSource="{Binding GheListFilter}" Grid.Row="2" WidthRequest="1200">
+            <CollectionView.Header>
+                <Grid Padding="10" ColumnDefinitions="100,350,200,*, 50" BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}">
+                    <Label Text="Matricula" FontAttributes="Bold" Grid.Column="0" />
+                    <Label Text="Nome" FontAttributes="Bold" Grid.Column="1" />
+                    <Label Text="GHE" FontAttributes="Bold" Grid.Column="2" />
+                    <Label Text="Descrição" FontAttributes="Bold" Grid.Column="3" />
+                    <Label Text="" FontAttributes="Bold" Grid.Column="4" />
+                </Grid>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" ColumnDefinitions="100,350,200,*, 50">
+                        <Label VerticalOptions="Center" Text="{Binding Matricule}" Grid.Column="0" />
+                        <Label VerticalOptions="Center" Text="{Binding Name}" Grid.Column="1" />
+                        <Label VerticalOptions="Center" Text="{Binding GHE}" Grid.Column="2" />
+                        <Label VerticalOptions="Center" Text="{Binding Description}" Grid.Column="3" />
+                        <ImageButton 
+                            Source="printer.png"
+                            Grid.Column="4" 
+                            Command="{Binding Source={x:Reference ListGheVM}, Path=BindingContext.SaveReportCommand}" 
+                            CommandParameter="{Binding Id}" 
+                            VerticalOptions="Center" 
+                            HorizontalOptions="Center" 
+                        />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>
